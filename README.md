@@ -29,7 +29,7 @@ Inspired by:
 - [Installation](#installation)
 - [Server Usage](#server-usage)
   - [As string output](#as-string-output)
-  - [As Peact components](#as-peact-components)
+  - [As Preact components](#as-preact-components)
 - [Use Cases](#use-cases)
 - [Contributing to this project](#contributing-to-this-project)
 - [License](#license)
@@ -171,7 +171,7 @@ const html = `
 `;
 ```
 
-### As Peact components
+### As Preact components
 If you are doing server side rendering with Preact, it may be easier to render the 
 document template with Preact as well:
 
