@@ -29,16 +29,14 @@ implementing features, refactoring code, porting to a different language),
 otherwise you risk spending a lot of time working on something that the
 project's developers might not want to merge into the project.
 
-Make sure to sign the CLA - https://cla-assistant.io/nfl/react-helmet along with your PR submission.
-
 <a name="development"></a>
 ## Development Process
 Here are some guidelines to making changes and preparing your PR:
 
 1. Make your proposed changes to the repository, along with updating/adding test cases.
 2. (Optional) If you prefer to also test your changes in a real application, you can do the following:
-  1. Run `npm link` in `react-helmet` repository.
-  2. `cd` to your favorite React application, run `npm link react-helmet` to point to your local repository.
+  1. Run `npm link` in `preact-helmet` repository.
+  2. `cd` to your favorite Preact application, run `npm link preact-helmet` to point to your local repository.
   3. Run your application to verify your changes.
 3. Run `npm test` to verify all test cases pass.
 4. Run `npm run lint` to verify there are no linting errors.

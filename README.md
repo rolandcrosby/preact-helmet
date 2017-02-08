@@ -29,7 +29,7 @@ Inspired by:
 - [Installation](#installation)
 - [Server Usage](#server-usage)
   - [As string output](#as-string-output)
-  - [As React components](#as-react-components)
+  - [As Peact components](#as-peact-components)
 - [Use Cases](#use-cases)
 - [Contributing to this project](#contributing-to-this-project)
 - [License](#license)
