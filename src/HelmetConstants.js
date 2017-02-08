@@ -22,7 +22,7 @@ export const TAG_PROPERTIES = {
     ITEM_PROP: "itemprop"
 };
 
-export const REACT_TAG_MAP = {
+export const PREACT_TAG_MAP = {
     "charset": "charSet",
     "http-equiv": "httpEquiv",
     "itemprop": "itemProp",

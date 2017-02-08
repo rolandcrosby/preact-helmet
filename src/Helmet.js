@@ -1,14 +1,10 @@
-import React from "react";
-import withSideEffect from "react-side-effect";
+import {h /** @jsx h */, Component} from "preact";
+import withSideEffect from "preact-side-effect";
 import deepEqual from "deep-equal";
 import objectAssign from "object-assign";
-import {
-    TAG_NAMES,
-    TAG_PROPERTIES,
-    REACT_TAG_MAP
-} from "./HelmetConstants.js";
+import {TAG_NAMES, TAG_PROPERTIES} from "./HelmetConstants.js";
 
-const HELMET_ATTRIBUTE = "data-react-helmet";
+const HELMET_ATTRIBUTE = "data-preact-helmet";
 
 const encodeSpecialCharacters = (str) => {
     return String(str)
@@ -253,8 +249,8 @@ const generateHtmlAttributesAsString = (attributes) => Object.keys(attributes)
 const generateTitleAsString = (type, title, attributes) => {
     const attributeString = generateHtmlAttributesAsString(attributes);
     return attributeString
-        ? `<${type} ${HELMET_ATTRIBUTE}="true" ${attributeString}>${encodeSpecialCharacters(title)}</${type}>`
-        : `<${type} ${HELMET_ATTRIBUTE}="true">${encodeSpecialCharacters(title)}</${type}>`;
+        ? `<${type} ${HELMET_ATTRIBUTE} ${attributeString}>${encodeSpecialCharacters(title)}</${type}>`
+        : `<${type} ${HELMET_ATTRIBUTE}>${encodeSpecialCharacters(title)}</${type}>`;
 };
 
 const generateTagsAsString = (type, tags) => tags.reduce((str, tag) => {
@@ -271,31 +267,31 @@ const generateTagsAsString = (type, tags) => tags.reduce((str, tag) => {
 
     const isSelfClosing = [TAG_NAMES.NOSCRIPT, TAG_NAMES.SCRIPT, TAG_NAMES.STYLE].indexOf(type) === -1;
 
-    return `${str}<${type} ${HELMET_ATTRIBUTE}="true" ${attributeHtml}${isSelfClosing ? `/>` : `>${tagContent}</${type}>`}`;
+    return `${str}<${type} ${HELMET_ATTRIBUTE} ${attributeHtml}${isSelfClosing ? `>` : `>${tagContent}</${type}>`}`;
 }, "");
 
-const generateTitleAsReactComponent = (type, title, attributes) => {
+const generateTitleAsPreactComponent = (type, title, attributes) => {
     // assigning into an array to define toString function on it
     const initProps = {
         key: title,
         [HELMET_ATTRIBUTE]: true
     };
     const props = Object.keys(attributes).reduce((obj, key) => {
-        obj[(REACT_TAG_MAP[key] || key)] = attributes[key];
+        obj[key] = attributes[key];
         return obj;
     }, initProps);
 
-    return [React.createElement(TAG_NAMES.TITLE, props, title)];
+    return [h(TAG_NAMES.TITLE, props, title)];
 };
 
-const generateTagsAsReactComponent = (type, tags) => tags.map((tag, i) => {
+const generateTagsAsPreactComponent = (type, tags) => tags.map((tag, i) => {
     const mappedTag = {
         key: i,
         [HELMET_ATTRIBUTE]: true
     };
 
     Object.keys(tag).forEach((attribute) => {
-        const mappedAttribute = REACT_TAG_MAP[attribute] || attribute;
+        const mappedAttribute = attribute;
 
         if (mappedAttribute === "innerHTML" || mappedAttribute === "cssText") {
             const content = tag.innerHTML || tag.cssText;
@@ -305,14 +301,14 @@ const generateTagsAsReactComponent = (type, tags) => tags.map((tag, i) => {
         }
     });
 
-    return React.createElement(type, mappedTag);
+    return h(type, mappedTag);
 });
 
 const getMethodsForTag = (type, tags) => {
     switch (type) {
         case TAG_NAMES.TITLE:
             return {
-                toComponent: () => generateTitleAsReactComponent(type, tags.title, tags.titleAttributes),
+                toComponent: () => generateTitleAsPreactComponent(type, tags.title, tags.titleAttributes),
                 toString: () => generateTitleAsString(type, tags.title, tags.titleAttributes)
             };
         case TAG_NAMES.HTML:
@@ -322,7 +318,7 @@ const getMethodsForTag = (type, tags) => {
             };
         default:
             return {
-                toComponent: () => generateTagsAsReactComponent(type, tags),
+                toComponent: () => generateTagsAsPreactComponent(type, tags),
                 toString: () => generateTagsAsString(type, tags)
             };
     }
@@ -339,44 +335,30 @@ const mapStateOnServer = ({htmlAttributes, title, titleAttributes, baseTag, meta
     style: getMethodsForTag(TAG_NAMES.STYLE, styleTags)
 });
 
-const Helmet = (Component) => class HelmetWrapper extends React.Component {
-    /**
-     * @param {Object} htmlAttributes: {"lang": "en", "amp": undefined}
-     * @param {String} title: "Title"
-     * @param {String} defaultTitle: "Default Title"
-     * @param {String} titleTemplate: "MySite.com - %s"
-     * @param {Object} titleAttributes: {"itemprop": "name"}
-     * @param {Object} base: {"target": "_blank", "href": "http://mysite.com/"}
-     * @param {Array} meta: [{"name": "description", "content": "Test description"}]
-     * @param {Array} link: [{"rel": "canonical", "href": "http://mysite.com/example"}]
-     * @param {Array} script: [{"type": "text/javascript", "src": "http://mysite.com/js/test.js"}]
-     * @param {Array} noscript: [{"innerHTML": "<img src='http://mysite.com/js/test.js'"}]
-     * @param {Array} style: [{"type": "text/css", "cssText": "div{ display: block; color: blue; }"}]
-     * @param {Function} onChangeClientState: "(newState) => console.log(newState)"
-     */
-    static propTypes = {
-        htmlAttributes: React.PropTypes.object,
-        title: React.PropTypes.string,
-        defaultTitle: React.PropTypes.string,
-        titleTemplate: React.PropTypes.string,
-        titleAttributes: React.PropTypes.object,
-        base: React.PropTypes.object,
-        meta: React.PropTypes.arrayOf(React.PropTypes.object),
-        link: React.PropTypes.arrayOf(React.PropTypes.object),
-        script: React.PropTypes.arrayOf(React.PropTypes.object),
-        noscript: React.PropTypes.arrayOf(React.PropTypes.object),
-        style: React.PropTypes.arrayOf(React.PropTypes.object),
-        onChangeClientState: React.PropTypes.func
-    }
 
-    // Component.peek comes from react-side-effect:
+/**
+ * @param {Object} htmlAttributes: {"lang": "en", "amp": undefined}
+ * @param {String} title: "Title"
+ * @param {String} defaultTitle: "Default Title"
+ * @param {String} titleTemplate: "MySite.com - %s"
+ * @param {Object} titleAttributes: {"itemprop": "name"}
+ * @param {Object} base: {"target": "_blank", "href": "http://mysite.com/"}
+ * @param {Array} meta: [{"name": "description", "content": "Test description"}]
+ * @param {Array} link: [{"rel": "canonical", "href": "http://mysite.com/example"}]
+ * @param {Array} script: [{"type": "text/javascript", "src": "http://mysite.com/js/test.js"}]
+ * @param {Array} noscript: [{"innerHTML": "<img src='http://mysite.com/js/test.js'"}]
+ * @param {Array} style: [{"type": "text/css", "cssText": "div{ display: block; color: blue; }"}]
+ * @param {Function} onChangeClientState: "(newState) => console.log(newState)"
+ */
+const Helmet = (WrappedComponent) => class HelmetWrapper extends Component {
+    // WrappedComponent.peek comes from react-side-effect:
     // For testing, you may use a static peek() method available on the returned component.
     // It lets you get the current state without resetting the mounted instance stack.
     // Don’t use it for anything other than testing.
-    static peek = Component.peek
+    static peek = WrappedComponent.peek
 
     static rewind = () => {
-        let mappedState = Component.rewind();
+        let mappedState = WrappedComponent.rewind();
         if (!mappedState) {
             // provide fallback if mappedState is undefined
             mappedState = mapStateOnServer({
@@ -396,15 +378,19 @@ const Helmet = (Component) => class HelmetWrapper extends React.Component {
     }
 
     static set canUseDOM(canUseDOM) {
-        Component.canUseDOM = canUseDOM;
+        WrappedComponent.canUseDOM = canUseDOM;
     }
 
     shouldComponentUpdate(nextProps) {
-        return !deepEqual(this.props, nextProps);
+        const props = {...nextProps};
+        if (!props.children || !props.children.length) {
+            delete props.children;
+        }
+        return !deepEqual(this.props, props);
     }
 
     render() {
-        return <Component {...this.props} />;
+        return (<WrappedComponent {...this.props} />);
     }
 };
 
