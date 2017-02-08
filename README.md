@@ -1,15 +1,24 @@
+# Preact Helmet
+## A document head manager for Preact
+
+> This project is a port of [react-helmet](https://github.com/nfl/react-helmet) 
+to [Preact](https://preactjs.com), the 3kB lightweight React alternative. 
+
 <img align="right" height="200" src="http://static.nfl.com/static/content/public/static/img/logos/nfl-engineering-light.svg" />
 
-# React Helmet
-
-[![npm Version](https://img.shields.io/npm/v/react-helmet.svg?style=flat-square)](https://www.npmjs.org/package/react-helmet)
-[![Build Status](https://img.shields.io/travis/nfl/react-helmet/master.svg?style=flat-square)](https://travis-ci.org/nfl/react-helmet)
-[![Dependency Status](https://img.shields.io/david/nfl/react-helmet.svg?style=flat-square)](https://david-dm.org/nfl/react-helmet)
+[![npm Version](https://img.shields.io/npm/v/preact-helmet.svg?style=flat-square)](https://www.npmjs.org/package/preact-helmet)
+[![Build Status](https://img.shields.io/travis/Download/preact-helmet/master.svg?style=flat-square)](https://travis-ci.org/Download/preact-helmet)
+[![Dependency Status](https://img.shields.io/david/Download/preact-helmet.svg?style=flat-square)](https://david-dm.org/Download/preact-helmet)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md#pull-requests)
 
-This reusable React component will manage all of your changes to the document head with support for document title, meta, link, style, script, noscript, and base tags.
+This Preact component will manage all of your changes to the document head with support 
+for document title, meta, link, style, script, noscript, and base tags.
 
-Inspired by [react-document-title](https://github.com/gaearon/react-document-title)
+Inspired by:
+* [react-document-title](https://github.com/gaearon/react-document-title)
+* [react-side-effect](https://github.com/gaearon/react-side-effect)
+* [preact-side-effect](https://github.com/ooade/preact-side-effect) (port)
+* [react-helmet](https://github.com/nfl/react-helmet) (obviously)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -30,8 +39,8 @@ Inspired by [react-document-title](https://github.com/gaearon/react-document-tit
 
 ## Examples
 ```javascript
-import React from "react";
-import Helmet from "react-helmet";
+import {h} from "preact"; /** @jsx h */
+import Helmet from "preact-helmet";
 
 export default function Application () {
     return (
@@ -44,8 +53,8 @@ export default function Application () {
 ```
 
 ```javascript
-import React from "react";
-import Helmet from "react-helmet";
+import {h} from "preact"; /** @jsx h */
+import Helmet from "preact-helmet";
 
 export default function Application () {
     return (
@@ -94,25 +103,39 @@ export default function Application () {
 
 ## Installation
 ```
-npm install --save react-helmet
+npm install --save preact-helmet
 ```
 
 ## Server Usage
-To use on the server, call `rewind()` after `ReactDOMServer.renderToString` or `ReactDOMServer.renderToStaticMarkup` to get the head data for use in your prerender.
+To use on the server, call `rewind()` after using `render` from `preact-render-to-string` 
+to get the head data for use in your prerender.
 
 Because this component keeps track of mounted instances, **you have to make sure to call `rewind` on server**, or you'll get a memory leak.
 
 ```javascript
-ReactDOMServer.renderToString(<Handler />);
+import { render } from 'preact-render-to-string'
+import Helmet from 'preact-helmet'
+
+var markup = renderToString(<MyApp />);
 let head = Helmet.rewind();
 
-head.htmlAttributes
-head.title
-head.base
-head.meta
-head.link
-head.script
-head.style
+// populate some document template using `markup` and `head`
+const html = `
+    <!doctype html>
+    <html>
+        <head>
+            ${head.title.toString()}
+            ${head.meta.toString()}
+            ${head.link.toString()}
+        </head>
+        <body>
+            <div id="content">
+                ${markup}
+            </div>
+        </body>
+    </html>
+`;
+
 ```
 
 `head` contains the following properties:
@@ -125,7 +148,9 @@ head.style
 - `noscript`
 - `style`
 
-Each property contains `toComponent()` and `toString()` methods. Use whichever is appropriate for your environment. For htmlAttributes, use the JSX spread operator on the object returned by `toComponent()`. E.g:
+Each property contains `toComponent()` and `toString()` methods. Use whichever is appropriate 
+for your environment. For htmlAttributes, use the JSX spread operator on the object returned 
+by `toComponent()`. E.g:
 
 ### As string output
 ```javascript
@@ -139,16 +164,19 @@ const html = `
         </head>
         <body>
             <div id="content">
-                // React stuff here
+                ${markup}
             </div>
         </body>
     </html>
 `;
 ```
 
-### As React components
+### As Peact components
+If you are doing server side rendering with Preact, it may be easier to render the 
+document template with Preact as well:
+
 ```javascript
-function HTML () {
+function HTML({head}) {
     const attrs = head.htmlAttributes.toComponent();
 
     return (
@@ -160,7 +188,7 @@ function HTML () {
             </head>
             <body>
                 <div id="content">
-                    // React stuff here
+                    <MyApp />
                 </div>
             </body>
         </html>
@@ -356,4 +384,4 @@ Please take a moment to review the [guidelines for contributing](CONTRIBUTING.md
 MIT
 
 ## More Examples
-[react-helmet-example](https://github.com/mattdennewitz/react-helmet-example)
+[react-helmet-example](https://github.com/mattdennewitz/react-helmet-example) (for React, but still useful)
