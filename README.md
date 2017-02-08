@@ -116,8 +116,8 @@ Because this component keeps track of mounted instances, **you have to make sure
 import { render } from 'preact-render-to-string'
 import Helmet from 'preact-helmet'
 
-var markup = renderToString(<MyApp />);
-let head = Helmet.rewind();
+const markup = renderToString(<MyApp />);
+const head = Helmet.rewind();
 
 // populate some document template using `markup` and `head`
 const html = `
