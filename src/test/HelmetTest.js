@@ -1644,8 +1644,8 @@ describe("Helmet", () => {
         academic and the only reason this test fails is because we do a bit weird
         stuff in here with switching canUseDom on and off etc...
         SEE https://github.com/developit/preact/issues/534
-        it("will only add new tags and will preserve tags when rendering additional Helmet instances", () => {
 
+        it("will only add new tags and will preserve tags when rendering additional Helmet instances", () => {
             const spy = sinon.spy();
             let addedTags;
             let removedTags;
@@ -1700,7 +1700,6 @@ describe("Helmet", () => {
             expect(removedTags).to.not.have.property("linkTags");
         });
 */
-
         it("can not nest Helmets", () => {
             child = render(
                 <Helmet
@@ -2416,9 +2415,7 @@ describe("Helmet", () => {
     });
 });
 
-// taken from preact-compat
-// https://github.com/developit/preact-compat/commit/4658f4cdb009347ac798a6e28fa0a865b33478d0
 function unmountComponentAtNode(container, child) {
-    return render(<EmptyComponent />, container, child);
-    function EmptyComponent() { return null; }
+    // render an empty string to force the components to unmount
+    return render("", container, child);
 }
