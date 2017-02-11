@@ -4,8 +4,6 @@
 > This project is a port of [react-helmet](https://github.com/nfl/react-helmet) 
 to [Preact](https://preactjs.com), the 3kB lightweight React alternative. 
 
-<img align="right" height="200" src="http://static.nfl.com/static/content/public/static/img/logos/nfl-engineering-light.svg" />
-
 [![npm Version](https://img.shields.io/npm/v/preact-helmet.svg?style=flat-square)](https://www.npmjs.org/package/preact-helmet)
 [![Build Status](https://img.shields.io/travis/Download/preact-helmet/master.svg?style=flat-square)](https://travis-ci.org/Download/preact-helmet)
 [![Dependency Status](https://img.shields.io/david/Download/preact-helmet.svg?style=flat-square)](https://david-dm.org/Download/preact-helmet)
