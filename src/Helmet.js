@@ -1,7 +1,6 @@
 import {h /** @jsx h */, Component} from "preact";
 import withSideEffect from "preact-side-effect";
 import deepEqual from "deep-equal";
-import objectAssign from "object-assign";
 import {TAG_NAMES, TAG_PROPERTIES} from "./HelmetConstants.js";
 
 const HELMET_ATTRIBUTE = "data-preact-helmet";
@@ -135,7 +134,7 @@ const getTagsFromPropsList = (tagName, primaryAttributes, propsList) => {
             const keys = Object.keys(instanceSeenTags);
             for (let i = 0; i < keys.length; i++) {
                 const attributeKey = keys[i];
-                const tagUnion = objectAssign(
+                const tagUnion = Object.assign(
                     {},
                     approvedSeenTags[attributeKey],
                     instanceSeenTags[attributeKey]

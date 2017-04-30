@@ -29,9 +29,10 @@
   ],
   "dependencies": {
     "deep-equal": "^1.0.1",
-    "object-assign": "^4.0.1",
-    "preact": "^7.1.0",
-    "preact-side-effect": "^1.2.0"
+    "preact-side-effect": "https://github.com/rolandcrosby/preact-side-effect/tarball/master"
+  },
+  "peerDependencies": {
+    "preact": "^8.1.0"
   },
   "devDependencies": {
     "babel-cli": "6.22.2",
